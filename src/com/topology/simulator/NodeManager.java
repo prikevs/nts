@@ -9,6 +9,9 @@ public class NodeManager {
     private Map<Address, INode> addressNodeHashMap = new HashMap<>();
     private Map<INode, Address> nodeAddressHashMap = new IdentityHashMap<>();
 
+    private Map<String, Address> uriAddressHashMap = new HashMap<>();
+    private Map<Address, String> addressUriHashMap = new HashMap<>();
+
     private int nextIdentifier() {
         return latestIdentifier++;
     }
@@ -34,5 +37,33 @@ public class NodeManager {
             nodeAddressHashMap.remove(node);
             addressNodeHashMap.remove(address);
         }
+    }
+
+    public boolean registerUri(INode node, String uri) {
+        Address address = nodeAddressHashMap.get(node);
+        if (address == null) {
+            return false;
+        }
+        if (uriAddressHashMap.containsKey(uri)) {
+            return false;
+        }
+        addressUriHashMap.put(address, uri);
+        uriAddressHashMap.put(uri, address);
+        return true;
+    }
+
+    public void unregisterUri(INode node) {
+        Address address = nodeAddressHashMap.get(node);
+        if (address != null) {
+            String uri = addressUriHashMap.get(address);
+            if (uri != null) {
+                addressUriHashMap.remove(address);
+                uriAddressHashMap.remove(uri);
+            }
+        }
+    }
+
+    public Address lookupUri(String uri) {
+        return uriAddressHashMap.get(uri);
     }
 }

@@ -1,8 +1,9 @@
 package com.topology.simulator;
 
-public class NetworkTopologySimulator implements INode.Delegate {
+public class NetworkTopologySimulator implements INetworkTopologySimulator, INode.Delegate {
     private final NodeManager nodeManager;
     private final Handler handler;
+    private final Address SIMULATOR_ADDRESS = Address.create(0);
 
     private static void handleNetworkData(NodeManager nodeManager, Event event) {
         Event.NetworkData networkData = (Event.NetworkData) event.data;
@@ -45,6 +46,13 @@ public class NetworkTopologySimulator implements INode.Delegate {
         handler.loopUntilEmpty();
     }
 
+    public void executeCommand(String uri, ICommand command) {
+        Address address = nodeManager.lookupUri(uri);
+        if (address != null) {
+            executeCommand(address, command);
+        }
+    }
+
     public void addNode(INode node) {
         node.setDelegate(this);
         node.initialize();
@@ -74,5 +82,13 @@ public class NetworkTopologySimulator implements INode.Delegate {
         return nodeManager.getAddress(node);
     }
 
+    @Override
+    public Address lookup(String uri) {
+        return nodeManager.lookupUri(uri);
+    }
 
+    @Override
+    public boolean registerUri(INode node, String uri) {
+        return nodeManager.registerUri(node, uri);
+    }
 }

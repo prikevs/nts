@@ -5,8 +5,6 @@ import com.topology.simulator.Address;
 import com.topology.simulator.ICommand;
 import com.topology.simulator.IData;
 
-import java.util.function.IntConsumer;
-
 public class DistributedHashTableNode extends AbstractNode {
     Address selfAddress;
 
@@ -16,13 +14,13 @@ public class DistributedHashTableNode extends AbstractNode {
     }
 
     @Override
-    public void onReceive(Address address, IData data) {
-        log("receive data from " + address.getIdentifier() + ": " + ((Data) data).msg);
+    public void onReceive(Address address, IData rawData) {
+        log("receive data from " + address.getIdentifier() + ": " + ((Data) rawData).msg);
     }
 
     @Override
-    public void onCommand(ICommand command) {
-        Command realCommand = (Command) command;
+    public void onCommand(ICommand rawCommand) {
+        Command realCommand = (Command) rawCommand;
         log("receive command: " + realCommand.cmd);
         Data data = new Data();
         data.msg = "hello the other";

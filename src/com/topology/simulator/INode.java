@@ -3,7 +3,7 @@ package com.topology.simulator;
 /**
  * Interface of nodes in the network.
  */
-interface INode {
+public interface INode {
     interface Delegate {
         /**
          * UDP style sending data. Do not need to know if data reaches destination.
@@ -26,11 +26,31 @@ interface INode {
          */
         void disconnect(INode node);
 
+        /**
+         * Gets address by self node.
+         * @param node this.
+         * @return address of the node.
+         */
         Address getAddress(INode node);
+
+        /**
+         * Lookup address by the uri provided.
+         * @param uri
+         */
+        Address lookup(String uri);
+
+        boolean registerUri(INode node, String uri);
     }
 
+    /**
+     * Initialize the node, will be called by addNode().
+     */
     void initialize();
 
+    /**
+     * Set delegate, which will be NetworkTopologySimulator.
+     * @param delegate NetworkTopologySimulator.
+     */
     void setDelegate(Delegate delegate);
 
     /**
@@ -40,5 +60,9 @@ interface INode {
      */
     void onReceive(Address address, IData data);
 
+    /**
+     * Callback while receiving commands.
+     * @param command command received.
+     */
     void onCommand(ICommand command);
 }
